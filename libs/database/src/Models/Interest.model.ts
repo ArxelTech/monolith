@@ -1,7 +1,7 @@
-export interface Interest {
+export interface InterestInterface {
   id: string;
   interest: string;
 }
 
-export type Interestcreateble = Omit<Interest, 'id'>;
-export type Interestupdateable = Partial<Interestcreateble>;
+export type Interestcreateable = Omit<InterestInterface, 'id'>;
+export type Interestupdateable = Partial<Interestcreateable>;

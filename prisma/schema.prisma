@@ -76,3 +76,19 @@ model Ticket {
   // events
   event Event @relation(fields: [eventId], references: [id])
 }
+
+enum OTPENUM {
+  AUTH
+  RESETPASSWORD
+  PAYMENT
+}
+model OTP {
+  id  String @id @default(cuid())
+  userId  String
+  isForUser Boolean
+  code  Int
+  isExpired Boolean @default(false)
+  type  OTPENUM
+  createdAt DateTime @default(now())
+  updatadAt DateTime @default(now())
+}
