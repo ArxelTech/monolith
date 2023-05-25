@@ -23,6 +23,12 @@
       ],
       "@app/database/*": [
         "libs/database/src/*"
+      ],
+      "@app/otp": [
+        "libs/otp/src"
+      ],
+      "@app/otp/*": [
+        "libs/otp/src/*"
       ]
     }
   }

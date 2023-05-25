@@ -12,6 +12,8 @@
   },
   "moduleNameMapper": {
     "@app/database/(.*)": "<rootDir>/../libs/database/src/$1",
-    "@app/database": "<rootDir>/../libs/database/src"
+    "@app/database": "<rootDir>/../libs/database/src",
+    "@app/otp/(.*)": "<rootDir>/../libs/otp/src/$1",
+    "@app/otp": "<rootDir>/../libs/otp/src"
   }
 }

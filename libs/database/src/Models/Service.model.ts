@@ -1,7 +1,7 @@
-export interface Service {
+export interface ServiceInterface {
   id: string;
   service: string;
 }
 
-export type ServiceCreate = Omit<Service, 'id'>;
-export type ServiceUpdate = Partial<ServiceCreate>;
+export type ServiceCreateable = Pick<ServiceInterface, 'service'>;
+export type ServiceUpdateable = Partial<ServiceCreateable>;
