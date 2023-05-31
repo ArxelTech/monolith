@@ -29,6 +29,12 @@
       ],
       "@app/otp/*": [
         "libs/otp/src/*"
+      ],
+      "@app/email": [
+        "libs/email/src"
+      ],
+      "@app/email/*": [
+        "libs/email/src/*"
       ]
     }
   }

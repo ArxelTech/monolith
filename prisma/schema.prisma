@@ -14,16 +14,17 @@ model User {
   id            String   @id @default(cuid())
   email         String   @unique
   password      String?
+  fullName      String
   username      String?
   avatar        String?
-  emailVerified Boolean
-  verified      Boolean
+  emailVerified Boolean  @default(false)
+  verified      Boolean  @default(false)
   facebookId    String?
   googleId      String?
   interests     String[] @default([])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
-  isBusiness    Boolean
+  isBusiness    Boolean  @default(false)
   service       String[] @default([])
 
   // relationship
@@ -82,13 +83,14 @@ enum OTPENUM {
   RESETPASSWORD
   PAYMENT
 }
+
 model OTP {
-  id  String @id @default(cuid())
-  userId  String
+  id        String   @id @default(cuid())
+  userId    String
   isForUser Boolean
-  code  Int
-  isExpired Boolean @default(false)
-  type  OTPENUM
+  code      Int
+  isExpired Boolean  @default(false)
+  type      OTPENUM
   createdAt DateTime @default(now())
   updatadAt DateTime @default(now())
 }

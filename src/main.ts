@@ -7,7 +7,7 @@ const morgan = require('morgan');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(morgan('combined'));
+  app.use(morgan('tiny'));
   app.enableCors();
   const configSerrvice = app.get<ConfigService>(ConfigService);
   const config = new DocumentBuilder()
