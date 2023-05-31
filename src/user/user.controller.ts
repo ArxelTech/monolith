@@ -63,7 +63,7 @@ export class UserController {
   @Put('avatar/:userId')
   updateUserProfile(
     @Param('userId') userId: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: any,
   ) {
     return this.userService.uploadFile(userId, file);
   }

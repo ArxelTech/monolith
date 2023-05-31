@@ -151,7 +151,7 @@ export class UserService {
     };
   }
 
-  async uploadFile(userId: string, file: Express.Multer.File) {
+  async uploadFile(userId: string, file: any) {
     console.log(file);
     const user = await this.databaseService.user.findFirst({
       where: { id: userId },
