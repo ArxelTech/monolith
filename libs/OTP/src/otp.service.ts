@@ -12,8 +12,8 @@ export class OtpService {
 
   private generateNumber(): number {
     const options = {
-      min: 10000,
-      max: 19999,
+      min: 100000,
+      max: 199999,
       integer: true,
     };
     const code = randomNumber(options);
@@ -39,18 +39,30 @@ export class OtpService {
         userId,
       },
     });
+    const timeout = setTimeout(() => {
+      this.markAsExpired(otp.id);
+      clearTimeout(timeout);
+    }, 5 * 60000);
     this.logger.verbose(otp);
     return code;
   }
 
-  async verifyOtp(id: string): Promise<boolean> {
-    const otp = await this.databaseService.oTP.findUnique({ where: { id } });
+  async verifyEmailOtp(code: number, userId: string): Promise<boolean> {
+    const otp = await this.databaseService.oTP.findFirst({
+      where: {
+        AND: [{ userId }, { code }, { type: 'AUTH' }],
+      },
+    });
     if (!otp) {
       return false;
     }
     if (otp.isExpired) {
       return false;
     } else {
+      await this.databaseService.oTP.update({
+        where: { id: otp.id },
+        data: { isExpired: true },
+      });
       return true;
     }
   }
