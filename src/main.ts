@@ -4,8 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const morgan = require('morgan');
-require('source-map-support/register');
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(morgan('tiny'));
