@@ -17,6 +17,8 @@ import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { loginDTO } from './dto/login.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResetPasswordDto } from './dto/resetpassword.Dto';
+import { VerifyEmailDTO } from './dto/verifyemail.dto';
+import { ResendEmailVerificationDTO } from './dto/resend.dto';
 
 @ApiTags('USER')
 @Controller('user')
@@ -39,6 +41,19 @@ export class UserController {
   @Post('auth/passwordreset')
   requestpasswordrreset(@Body() loginDto: ResetPasswordDto) {
     return this.userService.sendResetLink(loginDto.email);
+  }
+
+  @ApiBody({ type: VerifyEmailDTO })
+  @Post('auth/verifyemail')
+  verifyemail(@Body() Dto: VerifyEmailDTO) {
+    return this.userService.verifyEmail(Dto);
+  }
+
+  @ApiBody({ type: ResendEmailVerificationDTO })
+  @Post('auth/resend/verification-code')
+  verifyemailresend(@Body() Dto: ResendEmailVerificationDTO) {
+    console.log(Dto);
+    return this.userService.resendCode(Dto.email);
   }
 
   @ApiBody({ type: UpdateUserDto })

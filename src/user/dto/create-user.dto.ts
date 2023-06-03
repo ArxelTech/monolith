@@ -15,11 +15,11 @@ export class CreateUserDto implements Partial<User> {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  fullName?: string;
+  fullName: string;
 
   @Expose()
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  password?: string;
+  password: string;
 }

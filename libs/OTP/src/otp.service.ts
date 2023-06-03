@@ -4,6 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 const randomNumber = require('random-number');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { OTP, OTPENUM } from '@prisma/client';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class OtpService {
@@ -11,12 +12,7 @@ export class OtpService {
   constructor(private databaseService: DatabaseService) {}
 
   private generateNumber(): number {
-    const options = {
-      min: 100000,
-      max: 199999,
-      integer: true,
-    };
-    const code = randomNumber(options);
+    const code = randomInt(100000, 199999);
     return code;
   }
 
@@ -34,7 +30,7 @@ export class OtpService {
       data: {
         code,
         isExpired: false,
-        isForUser: isUser ? true : false,
+        isForUser: isUser,
         type,
         userId,
       },
