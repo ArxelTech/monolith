@@ -30,6 +30,7 @@ export class InterestsService {
   }
 
   async addInterest(payload: AddInterestDto) {
+    console.log(payload);
     const exist = await this.databaseService.user.findFirst({
       where: { id: payload.userId },
     });

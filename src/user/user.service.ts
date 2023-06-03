@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import Cloudinary from 'src/utils/cloudinary';
 import { DeliveryType } from 'cloudinary';
+import { VerifyEmailDTO } from './dto/verifyemail.dto';
 
 @Injectable()
 export class UserService {
@@ -29,9 +30,10 @@ export class UserService {
     return await hash(password, salt);
   }
   async create(createUserDto: CreateUserDto) {
+    console.log(createUserDto);
     const user = await this.databaseService.user.findFirst({
       where: {
-        email: createUserDto.email,
+        email: createUserDto.email.toLowerCase(),
       },
     });
 
@@ -43,7 +45,7 @@ export class UserService {
     const newuser = await this.databaseService.user.create({
       data: {
         fullName: createUserDto.fullName,
-        email: createUserDto.email,
+        email: createUserDto.email.toLowerCase(),
         password,
       },
     });
@@ -51,16 +53,25 @@ export class UserService {
     await this.emailService.sendEmailVerificationOTP(newuser);
     return {
       message: 'User account created',
+      data: newuser,
     };
   }
 
-  async verifyEmail(email: string, code: number) {
-    const valid = await this.otpService.verifyEmailOtp(code, email);
+  async verifyEmail(payload: VerifyEmailDTO) {
+    console.log(payload);
+    const user = await this.databaseService.user.findFirst({
+      where: { email: payload.email.toLowerCase() },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const valid = await this.otpService.verifyEmailOtp(payload.otp, user.id);
     if (!valid) {
       throw new BadRequestException('Invalid code');
     } else {
       await this.databaseService.user.update({
-        where: { email },
+        where: { email: payload.email.toLowerCase() },
         data: { emailVerified: true },
       });
       return {
@@ -71,7 +82,7 @@ export class UserService {
 
   async resendCode(email: string) {
     const user = await this.databaseService.user.findFirst({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
     await this.emailService.sendEmailVerificationOTP(user);
     return {
@@ -81,7 +92,7 @@ export class UserService {
 
   async login(payload: loginDTO) {
     const user = await this.databaseService.user.findFirst({
-      where: { email: payload.email },
+      where: { email: payload.email.toLowerCase() },
     });
 
     if (!user) {
@@ -119,6 +130,7 @@ export class UserService {
   }
 
   async updateUser(id: string, payload: UpdateUserDto) {
+    console.log(`this is the user id ${id}`);
     const user = await this.databaseService.user.findFirst({ where: { id } });
 
     if (!user) {
@@ -188,8 +200,9 @@ export class UserService {
   }
 
   async sendResetLink(email: string) {
+    console.log(email);
     const account = await this.databaseService.user.findFirst({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
     if (!account) {
       throw new BadRequestException('User not found');

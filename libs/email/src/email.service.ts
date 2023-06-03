@@ -29,6 +29,7 @@ export class EmailService {
   }
 
   async sendPasswordResetLink(user: User) {
+    console.log(user);
     const otp = await this.otpService.generateOtp({
       isUser: true,
       type: 'AUTH',
