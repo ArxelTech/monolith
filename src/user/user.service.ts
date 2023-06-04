@@ -51,9 +51,28 @@ export class UserService {
     });
     // send sign email
     await this.emailService.sendEmailVerificationOTP(newuser);
+
+    // token
+    // get token
+    const token = await this.jwtService.signAsync(
+      { email: newuser.email, password: newuser.password, id: newuser.id },
+      { algorithm: 'HS256', expiresIn: `1d` },
+    );
+
+    // refresh token
+
+    const refreshToken = await this.jwtService.signAsync(
+      { email: newuser.email, password: newuser.password, id: newuser.id },
+      { algorithm: 'HS256', expiresIn: `1m` },
+    );
+    delete newuser.password;
     return {
       message: 'User account created',
-      data: newuser,
+      data: {
+        token,
+        refreshToken,
+        user: newuser,
+      },
     };
   }
 
