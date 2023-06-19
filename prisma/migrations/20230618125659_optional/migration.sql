@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Event" ALTER COLUMN "pictures" SET DEFAULT ARRAY[]::TEXT[],
+ALTER COLUMN "bannerImage" DROP NOT NULL;

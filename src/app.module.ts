@@ -12,6 +12,8 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { JwtModule, JwtSecretRequestType } from '@nestjs/jwt';
+import { EventModule } from './event/event.module';
+import { HttpModule } from '@nestjs/axios';
 // import * as handlebars from 'handlebars';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -51,10 +53,12 @@ console.log(process.env.JWT_SECRET);
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    HttpModule,
     AuthModule,
     ServicesModule,
     InterestsModule,
     UserModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

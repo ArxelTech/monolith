@@ -28,7 +28,10 @@ model User {
   service       String[] @default([])
 
   // relationship
-  events Event[]
+  events         Event[]
+  Comment        Comment[]
+  Picture        Picture[]
+  TicketPurchase TicketPurchase[]
 }
 
 model Service {
@@ -42,24 +45,33 @@ model Interest {
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   title       String
   description String
-  pictures    String[]
+  bannerImage String?
+  pictures    String[] @default([])
   videoUrl    String?
   state       String
   lga         String
   address     String
   time        DateTime
   date        DateTime
-  people      String[] @default([])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  isPrivate   Boolean   @default(false)
+  hasTickets  Boolean   @default(false)
+  isDraft     Boolean   @default(true)
+  eventType   String
+  isLiveEvent Boolean   @default(false)
+  people      String[]  @default([])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
 
   // relationships
-  user    User     @relation(fields: [userId], references: [id])
-  tickets Ticket[]
+  user           User?            @relation(fields: [userId], references: [id])
+  tickets        Ticket[]
+  Comment        Comment[]
+  Picture        Picture[]
+  TicketPurchase TicketPurchase[]
 }
 
 model Ticket {
@@ -72,9 +84,58 @@ model Ticket {
   isUnlimited Boolean
   quantity    Int
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   // events
+  event          Event            @relation(fields: [eventId], references: [id])
+  TicketPurchase TicketPurchase[]
+}
+
+model TicketPurchase {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  ticketId  String
+  quantity  Int
+  transactionId Int? @db.Integer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // relationships
+  user   User   @relation(fields: [userId], references: [id])
+  event  Event  @relation(fields: [eventId], references: [id])
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  eventId     String
+  userId      String
+  comment     String
+  isOwner     Boolean
+  isAnonymous Boolean
+  images      String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  // events
+  event Event @relation(fields: [eventId], references: [id])
+  userr User  @relation(fields: [userId], references: [id])
+}
+
+model Picture {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  isFree    String
+  price     Float    @default(0)
+  approved  Boolean
+  images    String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  // relationship
+  user  User  @relation(fields: [userId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
 }
 
@@ -92,5 +153,5 @@ model OTP {
   isExpired Boolean  @default(false)
   type      OTPENUM
   createdAt DateTime @default(now())
-  updatadAt DateTime @default(now())
+  updatadAt DateTime @default(now()) @updatedAt
 }

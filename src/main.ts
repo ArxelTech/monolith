@@ -6,7 +6,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 const morgan = require('morgan');
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(morgan('tiny'));
+  app.use(morgan('combined'));
   app.enableCors();
   const configSerrvice = app.get<ConfigService>(ConfigService);
   const config = new DocumentBuilder()
