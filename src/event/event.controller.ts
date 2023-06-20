@@ -1,23 +1,38 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { EventService } from './services/event/event.service';
-import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateEventDto } from './DTO/CreateEventDto';
 import { CommentDto } from './DTO/CommentDto';
+import { TicketsService } from './services/tickets/tickets.service';
+import { EditTicketDto } from './DTO/EditTicketDto';
+import { BuyTicketDto } from './DTO/BuyTicketDto';
+import { AddTicketDto } from './DTO/AddTicketDto';
 
 @ApiTags('EVENT')
 @Controller('event')
 export class EventController {
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private ticketService: TicketsService,
+  ) {}
 
   @ApiParam({ name: 'eventId' })
   @Get(':eventId')
@@ -59,7 +74,7 @@ export class EventController {
         { name: 'bannerImage', maxCount: 1 },
         { name: 'pictures', maxCount: 5 },
       ],
-      { dest: './uploads' },
+      { dest: 'public/uploads' },
     ),
   )
   @Put('upload-images/:eventId')
@@ -72,5 +87,45 @@ export class EventController {
     },
   ) {
     return this.eventService.uploadEventImage(eventId, files);
+  }
+
+  // TICKETS SECTION
+
+  @ApiBody({ type: BuyTicketDto })
+  @Post('ticket/buy')
+  createTicket(@Body() body: BuyTicketDto) {
+    return this.ticketService.buyTicket(body);
+  }
+
+  @ApiQuery({ name: 'eventId', allowEmptyValue: true })
+  @ApiQuery({ name: 'userId', allowEmptyValue: true })
+  @Get('ticket/get-purchases/event|user?eventId=:eventId&userId=:userId')
+  getTicketPurchases(@Query() query: { eventId: string; userId: string }) {
+    console.log(query);
+    return this.ticketService.getAllTickets(query);
+  }
+
+  @ApiParam({ name: 'ticketId' })
+  @Get('ticket/:ticketId')
+  getTicketById(@Param('ticketId') id: string) {
+    return this.ticketService.getTicketById(id);
+  }
+
+  @ApiBody({ type: EditTicketDto })
+  @Put('ticket/update')
+  updateTicketPurchases(@Body() body: EditTicketDto) {
+    return this.ticketService.editTicket(body);
+  }
+
+  @ApiBody({ type: AddTicketDto })
+  @Put('ticket/add-more')
+  addMoretickets(@Body() body: AddTicketDto) {
+    return this.ticketService.addMoreTicket(body);
+  }
+
+  @ApiParam({ name: 'ticketId' })
+  @Delete('ticket/:ticketId')
+  deleteTicketPurchases(@Param('ticketId') ticketId: string) {
+    return this.ticketService.deleteTicket(ticketId);
   }
 }

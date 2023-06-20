@@ -127,9 +127,9 @@ model Picture {
   id        String   @id @default(cuid())
   userId    String
   eventId   String
-  isFree    String
+  isFree    Boolean @default(true)
   price     Float    @default(0)
-  approved  Boolean
+  approved  Boolean @default(false)
   images    String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

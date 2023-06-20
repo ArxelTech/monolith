@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CommentDto {
   @ApiProperty()
@@ -34,5 +34,6 @@ export class CommentDto {
   })
   @Type(() => Array<string>)
   @IsNotEmpty()
+  @IsOptional()
   images: string[];
 }
